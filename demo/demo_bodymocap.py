@@ -120,7 +120,8 @@ def run_body_mocap(args, body_bbox_detector, body_mocap, visualizer):
         res_img = visualizer.visualize(
             img_original_bgr,
             pred_mesh_list = pred_mesh_list, 
-            body_bbox_list = body_bbox_list)
+            # body_bbox_list = body_bbox_list,
+            smpl_only = args.save_smpl_only)
         
         # show result in the screen
         if not args.no_display:

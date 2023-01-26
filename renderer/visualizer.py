@@ -86,6 +86,7 @@ class Visualizer(object):
         vis_raw_hand_bbox = True,
         vis_body_pose = True,
         vis_hand_bbox = True,
+        smpl_only = False
     ):
          # init
         res_img = input_img.copy()
@@ -110,14 +111,14 @@ class Visualizer(object):
 
         # render predicted meshes
         if pred_mesh_list is not None:
-            rend_img = self.__render_pred_verts(input_img, pred_mesh_list)
+            rend_img = self.__render_pred_verts(input_img, pred_mesh_list, smpl_only=smpl_only)
             if rend_img is not None:
                 res_img = np.concatenate((res_img, rend_img), axis=1)
             # res_img = rend_img
         
         return res_img
         
-    def __render_pred_verts(self, img_original, pred_mesh_list):
+    def __render_pred_verts(self, img_original, pred_mesh_list, smpl_only=False):
 
         res_img = img_original.copy()
 
@@ -135,14 +136,14 @@ class Visualizer(object):
             self._visualize_gui_naive(pred_mesh_list_offset, img_original=res_img)
             overlaidImg = None
         else:
-            self._visualize_screenless_naive(pred_mesh_list_offset, img_original=res_img)
+            self._visualize_screenless_naive(pred_mesh_list_offset, img_original=res_img, smpl_only=smpl_only)
             overlaidImg = self.renderout['render_camview']
             # sideImg = self.renderout['render_sideview']
 
         return overlaidImg
 
 
-    def _visualize_screenless_naive(self, meshList, skelList=None, body_bbox_list=None, img_original=None, show_side = False, vis=False, maxHeight = 1080):
+    def _visualize_screenless_naive(self, meshList, skelList=None, body_bbox_list=None, img_original=None, show_side = False, vis=False, smpl_only=False, maxHeight = 1080):
         
         """
             args:
@@ -197,13 +198,19 @@ class Visualizer(object):
             img_original_resized = img_original
 
         self.renderer.setWindowSize(img_original_resized.shape[1], img_original_resized.shape[0])
-        self.renderer.setBackgroundTexture(img_original_resized)
+
+        if smpl_only:
+            self.renderer.setBackgroundTexture(np.zeros_like(img_original_resized))
+        else:
+            self.renderer.setBackgroundTexture(img_original_resized)
+
         self.renderer.setViewportSize(img_original_resized.shape[1], img_original_resized.shape[0])
 
         # self.renderer.add_mesh(meshList[0]['ver'],meshList[0]['f'])
         self.renderer.clear_mesh()
         for mesh in meshList:
             self.renderer.add_mesh(mesh['ver'],mesh['f'])
+ 
         self.renderer.showBackground(True)
         self.renderer.setWorldCenterBySceneCenter()
         self.renderer.setCameraViewMode("cam")

@@ -18,5 +18,5 @@ tqdm
 jinja2
 smplx
 sklearn
-opendr
+# opendr
 chumpy

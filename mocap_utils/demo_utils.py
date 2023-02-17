@@ -112,7 +112,7 @@ def setup_input(args):
 
     elif input_type =='image_dir':
         image_list = gnu.get_all_files(args.input_path, image_exts, "relative") 
-        image_list = [ osp.join(args.input_path, image_name) for image_name in image_list ]
+        image_list = [ osp.join(args.input_path, image_name[1:]) for image_name in image_list ]
         __img_seq_setup(args)
         return input_type, image_list
 

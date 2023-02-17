@@ -504,7 +504,7 @@ class glRenderer:
         return rgb
     
     def get_screen_color_ibgr(self):
-        glReadBuffer(GL_BACK)   #GL_BACK is Default in double buffering
+        glReadBuffer(GL_FRONT)   #Without xvfb-run, buffer is read after display
         data = glReadPixels(0, 0, self.width, self.height, GL_RGBA, GL_FLOAT, outputType=None)
         rgb = data.reshape(self.height, self.width, -1)
         rgb = np.flip(rgb, 0)
